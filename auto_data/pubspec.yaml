@@ -1,0 +1,13 @@
+name: auto_data
+description: Data class types and annotations
+version: 0.0.1
+author: Paul DeMarco
+homepage: https://www.github.com/pauldemarco/auto_data
+
+environment:
+  sdk: ">=2.0.0-dev.68.0 <3.0.0"
+
+dependencies:
+
+dev_dependencies:
+  test:

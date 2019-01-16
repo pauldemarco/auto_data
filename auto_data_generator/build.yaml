@@ -1,0 +1,15 @@
+targets:
+  $default:
+    builders:
+      auto_data_generator|auto_data:
+        enabled: true
+
+builders:
+  auto_data:
+    target: ":auto_data_generator"
+    import: "package:auto_data_generator/auto_data_generator.dart"
+    builder_factories: ["autoData"]
+    build_extensions: {".dart": [".auto_data.g.part"]}
+    auto_apply: dependents
+    build_to: source
+    applies_builders: ["source_gen"]
