@@ -5,7 +5,7 @@
 part of auto_data_generator;
 
 Builder autoData(BuilderOptions _) =>
-    new LibraryBuilder(new AutoDataGenerator());
+    new SharedPartBuilder([new AutoDataGenerator()], 'auto_data');
 
 class DataClass {
   final String name;
@@ -29,7 +29,7 @@ class AutoDataGenerator extends Generator {
       print('Handling class: ${e.element.name}');
       final visitor = DataElementVisitor();
       e.element.visitChildren(visitor);
-      final c = DataClass(e.element.name, visitor.props);
+      final c = DataClass(e.element.name.substring(1), visitor.props);
       classes.add(c);
     });
 
@@ -48,6 +48,8 @@ class DataElementVisitor<T> extends SimpleElementVisitor<T> {
 
   @override
   T visitFieldElement(FieldElement field) {
-    props[field.name] = field.type.displayName;
+    var type = field.type.displayName;
+    type = type.startsWith('\$') ? type.substring(1) : type;
+    props[field.name] = type;
   }
 }

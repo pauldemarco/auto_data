@@ -34,8 +34,10 @@ class FileGenerator {
     return result.toString();
   }
 
-  static String _generateClassHeader(DataClass c) {
-    return 'class ${c.name} {\n';
+  static StringBuffer _generateClassHeader(DataClass c) {
+    StringBuffer result = new StringBuffer();
+    result.writeln('class ${c.name} {');
+    return result;
   }
 
   static String _generateClassFooter(DataClass c) {
@@ -52,6 +54,7 @@ class FileGenerator {
 
   static StringBuffer _generateConstructor(DataClass c) {
     StringBuffer result = new StringBuffer();
+    result.write('const ');
     result.write('${c.name}({');
 
     final params = c.props.keys.map((name) => 'this.$name, ').join('');

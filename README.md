@@ -9,8 +9,10 @@ Specify the data class using the `@data` annotation:
 ```dart
 import 'package:auto_data/auto_data.dart';
 
+part 'person.g.dart';
+
 @data
-class Person {
+class $Person {
   String name;
   double weight;
   int age;
@@ -33,7 +35,7 @@ class Person {
   final double weight;
   final int age;
 
-  Person({
+  const Person({
     this.name,
     this.weight,
     this.age,
@@ -70,9 +72,9 @@ class Person {
 }
 ```
 
-Make sure to import the generated file (*\*.g.dart*):
+Import the source file:
 ```dart
-import 'package:example/person.g.dart';
+import 'package:example/person.dart';
 
 var person = Person(name: 'Paul', weight: 160, age: 29);
 var brother = person.copyWith(name: 'Joey', age:30);
@@ -95,7 +97,7 @@ dev_dependencies:
 
 ## Todo's
 
-- [ ] Optional constructor types (named, private, etc)
+- [ ] Optional constructor types (named, private, const, etc)
 - [ ] Add @nullable annotation
 - [ ] Deep immutability for Map
 - [ ] Deep immutability for List

@@ -11,5 +11,5 @@ builders:
     builder_factories: ["autoData"]
     build_extensions: {".dart": [".auto_data.g.part"]}
     auto_apply: dependents
-    build_to: source
-    applies_builders: ["source_gen"]
+    build_to: cache
+    applies_builders: ["source_gen|combining_builder"]
