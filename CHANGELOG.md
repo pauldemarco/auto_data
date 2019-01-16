@@ -1,3 +1,4 @@
-## [0.0.1] - TODO: Add release date.
+## [0.0.1] - January 16, 2019.
 
-* TODO: Describe initial release.
+* Initial release.
+* Generation of named constructor, toString, ==/hashCode, copyWith.

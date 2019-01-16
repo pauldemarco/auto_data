@@ -1,6 +1,6 @@
 # auto_data
 
-Generates simple data classes for dart.
+Generate simple data classes for dart.
 
 ## Example
 
@@ -92,3 +92,17 @@ dev_dependencies:
   auto_data_generator:
     path: ../auto_data_generator
 ```
+
+## Todo's
+
+- [ ] Optional constructor types (named, private, etc)
+- [ ] Add @nullable annotation
+- [ ] Deep immutability for Map
+- [ ] Deep immutability for List
+- [ ] Serialization toMap/fromMap
+- [ ] Serialization toJson/fromJson
+
+## References
+
+1. [Issue: Statically tracked shared immutable objects](https://github.com/dart-lang/language/issues/125)
+1. [Proposal: Shared immutable objects](https://github.com/dart-lang/language/blob/master/working/0125-static-immutability/feature-specification.md)
