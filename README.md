@@ -98,7 +98,8 @@ dev_dependencies:
 ## Todo's
 
 - [ ] Optional constructor types (named, private, const, etc)
-- [ ] Add @nullable annotation
+- [ ] Default values with @default annotation
+- [ ] Add @nullable annotation, or conversely a @required annotation
 - [ ] Deep immutability for Map
 - [ ] Deep immutability for List
 - [ ] Serialization toMap/fromMap
