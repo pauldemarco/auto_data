@@ -9,14 +9,18 @@ Builder autoData(BuilderOptions _) =>
 
 class DataClass {
   final String name;
-  final Map<String, String> props;
+  final List<DataClassProperty> props;
+  final String documentationComment;
 
-  DataClass(this.name, this.props);
+  DataClass(this.name, this.props, [this.documentationComment]);
+}
 
-  @override
-  String toString() {
-    return 'DataClass{name: $name, props: $props}';
-  }
+class DataClassProperty {
+  final String name;
+  final String type;
+  final String documentationComment;
+
+  DataClassProperty(this.name, this.type, [this.documentationComment]);
 }
 
 class AutoDataGenerator extends Generator {
@@ -26,10 +30,10 @@ class AutoDataGenerator extends Generator {
   Future<String> generate(LibraryReader library, BuildStep buildStep) async {
     final classes = List<DataClass>();
     library.annotatedWith(TypeChecker.fromRuntime(Data)).forEach((e) {
-      print('Handling class: ${e.element.name}');
       final visitor = DataElementVisitor();
       e.element.visitChildren(visitor);
-      final c = DataClass(e.element.name.substring(1), visitor.props);
+      final c = DataClass(e.element.name.substring(1), visitor.props,
+          e.element.documentationComment);
       classes.add(c);
     });
 
@@ -44,12 +48,15 @@ class AutoDataGenerator extends Generator {
 }
 
 class DataElementVisitor<T> extends SimpleElementVisitor<T> {
-  Map<String, String> props = {};
+  List<DataClassProperty> props = [];
 
   @override
   T visitFieldElement(FieldElement field) {
+    final name = field.name;
     var type = field.type.displayName;
     type = type.startsWith('\$') ? type.substring(1) : type;
-    props[field.name] = type;
+    final comment = field.documentationComment;
+    final prop = DataClassProperty(name, type, comment);
+    props.add(prop);
   }
 }

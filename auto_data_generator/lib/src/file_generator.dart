@@ -36,6 +36,9 @@ class FileGenerator {
 
   static StringBuffer _generateClassHeader(DataClass c) {
     StringBuffer result = new StringBuffer();
+    if (c.documentationComment != null) {
+      result.writeln(c.documentationComment);
+    }
     result.writeln('class ${c.name} {');
     return result;
   }
@@ -46,8 +49,11 @@ class FileGenerator {
 
   static StringBuffer _generateFinalFields(DataClass c) {
     StringBuffer result = new StringBuffer();
-    c.props.forEach((name, type) {
-      result.write('final $type $name;\n');
+    c.props.forEach((p) {
+      if (p.documentationComment != null) {
+        result.writeln(p.documentationComment);
+      }
+      result.write('final ${p.type} ${p.name};\n');
     });
     return result;
   }
@@ -57,7 +63,7 @@ class FileGenerator {
     result.write('const ');
     result.write('${c.name}({');
 
-    final params = c.props.keys.map((name) => 'this.$name, ').join('');
+    final params = c.props.map((p) => 'this.${p.name}, ').join('');
     result.write(params);
 
     result.writeln('});');
@@ -72,7 +78,8 @@ class FileGenerator {
     result.writeln('other is ${c.name} &&');
     result.writeln('runtimeType == other.runtimeType &&');
 
-    final params = c.props.keys.map((p) => '$p == other.$p').join(' && ');
+    final params =
+        c.props.map((p) => '${p.name} == other.${p.name}').join(' && ');
     result.write(params);
 
     result.writeln(';');
@@ -84,7 +91,7 @@ class FileGenerator {
     result.writeln('@override');
     result.write('int get hashCode => ');
 
-    final params = c.props.keys.map((p) => '$p.hashCode').join(' ^ ');
+    final params = c.props.map((p) => '${p.name}.hashCode').join(' ^ ');
     result.write(params);
 
     result.writeln(';');
@@ -97,7 +104,7 @@ class FileGenerator {
     result.writeln('String toString() {');
     result.write('return \'${c.name}{');
 
-    final params = c.props.keys.map((p) => '$p: \$$p').join(', ');
+    final params = c.props.map((p) => '${p.name}: \$${p.name}').join(', ');
     result.write(params);
 
     result.writeln('}\';');
@@ -110,16 +117,16 @@ class FileGenerator {
     StringBuffer result = new StringBuffer();
     result.writeln('${c.name} copyWith({');
 
-    c.props.forEach((name, type) {
-      result.writeln('$type $name,');
+    c.props.forEach((p) {
+      result.writeln('${p.type} ${p.name},');
     });
 
     result.writeln('}) {');
 
     result.writeln('return ${c.name}(');
 
-    c.props.forEach((name, type) {
-      result.writeln('$name: $name ?? this.$name,');
+    c.props.forEach((p) {
+      result.writeln('${p.name}: ${p.name} ?? this.${p.name},');
     });
 
     result.writeln(');');
