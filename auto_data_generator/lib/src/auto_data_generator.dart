@@ -102,10 +102,9 @@ class DataElementVisitor<T> extends SimpleElementVisitor<T> {
     type = type.startsWith('\$') ? type.substring(1) : type;
     final comment = field.documentationComment;
     final isNullable = field.metadata.any((a) => a.toSource() == '@nullable');
-    print('Setter: ${field.setter} Getter: ${field.getter}');
     var assignmentString = field.computeNode().toSource();
     assignmentString = assignmentString.substring(name.length);
-    if(assignmentString.length <= 0) {
+    if (assignmentString.length <= 0) {
       assignmentString = null;
     }
     return DataClassProperty(name, type, isNullable, assignmentString, comment);
