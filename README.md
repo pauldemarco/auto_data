@@ -97,6 +97,7 @@ dev_dependencies:
 ```
 
 ## Advanced usage
+
 ```dart
 import 'package:meta/meta.dart';
 import 'package:auto_data/auto_data.dart';
@@ -127,7 +128,7 @@ class $Person {
 ## Todo's
 
 - [ ] Optional constructor types (named, private, const, etc)
-- [x] Custom constructors should be copied over (Issue #1)
+- [x] Custom constructors should be copied over ([Issue #1](https://github.com/pauldemarco/auto_data/issues/1))
 - [x] Default values by assigning during declaration: `String name = 'Paul';`
 - [x] Add @nullable annotation for fields that are not required
 - [ ] Deep immutability for Map
