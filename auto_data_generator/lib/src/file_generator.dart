@@ -6,19 +6,19 @@ part of auto_data_generator;
 
 class FileGenerator {
   static StringBuffer generate(List<DataClass> classes) {
-    StringBuffer buffer = new StringBuffer();
+    final result = new StringBuffer();
     classes.forEach((dataClass) {
-      buffer.write(_generateClassHeader(dataClass));
-      buffer.writeln(_generateFinalFields(dataClass));
-      buffer.writeln(_generateNamedConstructor(dataClass));
-      buffer.writeln(_generateOtherConstructors(dataClass));
-      buffer.writeln(_generateOperatorEquals(dataClass));
-      buffer.writeln(_generateHashCode(dataClass));
-      buffer.writeln(_generateToString(dataClass));
-      buffer.writeln(_generateCopyWith(dataClass));
-      buffer.write(_generateClassFooter(dataClass));
+      result.write(_generateClassHeader(dataClass));
+      result.writeln(_generateFinalFields(dataClass));
+      result.writeln(_generateNamedConstructor(dataClass));
+      result.writeln(_generateOtherConstructors(dataClass));
+      result.writeln(_generateOperatorEquals(dataClass));
+      result.writeln(_generateHashCode(dataClass));
+      result.writeln(_generateToString(dataClass));
+      result.writeln(_generateCopyWith(dataClass));
+      result.write(_generateClassFooter(dataClass));
     });
-    return buffer;
+    return result;
   }
 
   static String camelToSnakeCase(String name) {
