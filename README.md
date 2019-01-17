@@ -68,14 +68,6 @@ class Point {
 }
 ```
 
-Import the source file:
-```dart
-import 'package:example/person.dart';
-
-var person = Person(name: 'Paul', weight: 160, age: 29);
-var brother = person.copyWith(name: 'Joey', age:30);
-```
-
 ## Requirements
 
 Add the following to your pubspec.yaml:
