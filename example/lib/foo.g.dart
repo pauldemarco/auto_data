@@ -6,15 +6,16 @@ part of 'foo.dart';
 // AutoDataGenerator
 // **************************************************************************
 
+@immutable
 class Foo {
   final String bar;
   final double baz;
   final List<int> counters;
 
-  Foo({
-    this.bar,
-    this.baz,
-    this.counters,
+  const Foo({
+    @required this.bar,
+    @required this.baz,
+    @required this.counters,
   });
 
   @override

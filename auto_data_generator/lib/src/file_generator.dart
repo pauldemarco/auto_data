@@ -10,7 +10,8 @@ class FileGenerator {
     classes.forEach((dataClass) {
       buffer.write(_generateClassHeader(dataClass));
       buffer.writeln(_generateFinalFields(dataClass));
-      buffer.writeln(_generateConstructor(dataClass));
+      buffer.writeln(_generateNamedConstructor(dataClass));
+      buffer.writeln(_generateOtherConstructors(dataClass));
       buffer.writeln(_generateOperatorEquals(dataClass));
       buffer.writeln(_generateHashCode(dataClass));
       buffer.writeln(_generateToString(dataClass));
@@ -21,7 +22,7 @@ class FileGenerator {
   }
 
   static String camelToSnakeCase(String name) {
-    StringBuffer result = new StringBuffer();
+    final result = new StringBuffer();
     for (var c in name.codeUnits) {
       if (c >= 65 && c <= 90) {
         c += 32;
@@ -35,10 +36,11 @@ class FileGenerator {
   }
 
   static StringBuffer _generateClassHeader(DataClass c) {
-    StringBuffer result = new StringBuffer();
+    final result = new StringBuffer();
     if (c.documentationComment != null) {
       result.writeln(c.documentationComment);
     }
+    result.writeln('@immutable');
     result.writeln('class ${c.name} {');
     return result;
   }
@@ -48,7 +50,7 @@ class FileGenerator {
   }
 
   static StringBuffer _generateFinalFields(DataClass c) {
-    StringBuffer result = new StringBuffer();
+    final result = new StringBuffer();
     c.props.forEach((p) {
       if (p.documentationComment != null) {
         result.writeln(p.documentationComment);
@@ -58,20 +60,40 @@ class FileGenerator {
     return result;
   }
 
-  static StringBuffer _generateConstructor(DataClass c) {
-    StringBuffer result = new StringBuffer();
+  static StringBuffer _generateNamedConstructor(DataClass c) {
+    final result = new StringBuffer();
     result.write('const ');
     result.write('${c.name}({');
 
-    final params = c.props.map((p) => 'this.${p.name}, ').join('');
-    result.write(params);
+    c.props.forEach((p) {
+      if (!p.isNullable && p.assignmentString == null) {
+        result.write('@required ');
+      }
+      result.write('this.${p.name}');
+      if(p.assignmentString != null) {
+        result.write(p.assignmentString);
+      }
+      result.write(', ');
+    });
 
     result.writeln('});');
     return result;
   }
 
+  static StringBuffer _generateOtherConstructors(DataClass c) {
+    final result = new StringBuffer();
+    c.constructors.forEach((c) {
+      if (c.documentationComment != null) {
+        result.writeln(c.documentationComment);
+      }
+      result.writeln(c.declaration);
+      result.writeln('');
+    });
+    return result;
+  }
+
   static StringBuffer _generateOperatorEquals(DataClass c) {
-    StringBuffer result = new StringBuffer();
+    final result = new StringBuffer();
     result.writeln('@override');
     result.writeln('bool operator ==(Object other) =>');
     result.writeln('identical(this, other) ||');
@@ -87,7 +109,7 @@ class FileGenerator {
   }
 
   static StringBuffer _generateHashCode(DataClass c) {
-    StringBuffer result = new StringBuffer();
+    final result = new StringBuffer();
     result.writeln('@override');
     result.write('int get hashCode => ');
 
@@ -99,7 +121,7 @@ class FileGenerator {
   }
 
   static StringBuffer _generateToString(DataClass c) {
-    StringBuffer result = new StringBuffer();
+    final result = new StringBuffer();
     result.writeln('@override');
     result.writeln('String toString() {');
     result.write('return \'${c.name}{');
@@ -114,7 +136,7 @@ class FileGenerator {
   }
 
   static StringBuffer _generateCopyWith(DataClass c) {
-    StringBuffer result = new StringBuffer();
+    final result = new StringBuffer();
     result.writeln('${c.name} copyWith({');
 
     c.props.forEach((p) {

@@ -1,3 +1,4 @@
+import 'package:meta/meta.dart';
 import 'package:auto_data/auto_data.dart';
 import 'foo.dart';
 

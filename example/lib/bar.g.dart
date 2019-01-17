@@ -6,15 +6,16 @@ part of 'bar.dart';
 // AutoDataGenerator
 // **************************************************************************
 
+@immutable
 class Bar {
   final String fab;
   final Foo foo;
   final Map<String, List<double>> accuracies;
 
-  Bar({
-    this.fab,
-    this.foo,
-    this.accuracies,
+  const Bar({
+    @required this.fab,
+    @required this.foo,
+    @required this.accuracies,
   });
 
   @override

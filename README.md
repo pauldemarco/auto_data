@@ -7,6 +7,7 @@ Generate simple data classes for dart.
 Specify the data class using the `@data` annotation:
 
 ```dart
+import 'package:meta/meta.dart';
 import 'package:auto_data/auto_data.dart';
 
 part 'person.g.dart';
@@ -95,11 +96,40 @@ dev_dependencies:
     path: ../auto_data_generator
 ```
 
+## Advanced usage
+```dart
+import 'package:meta/meta.dart';
+import 'package:auto_data/auto_data.dart';
+
+part 'person.g.dart';
+
+/// All comments are copied to generated code
+@data
+class $Person {
+  /// This field gets a default value
+  String name = 'Paul';
+
+  /// This field is not required
+  @nullable
+  double weight;
+
+  /// Age of the person
+  int age;
+
+  /// Custom constructors are copied over
+  $Person.genius()
+  : name = 'Albert',
+    age = 140;
+}
+```
+
+
 ## Todo's
 
 - [ ] Optional constructor types (named, private, const, etc)
-- [ ] Default values with @default annotation
-- [ ] Add @nullable annotation, or conversely a @required annotation
+- [x] Custom constructors should be copied over (Issue #1)
+- [x] Default values by assigning during declaration: `String name = 'Paul';`
+- [x] Add @nullable annotation for fields that are not required
 - [ ] Deep immutability for Map
 - [ ] Deep immutability for List
 - [ ] Serialization toMap/fromMap

@@ -6,16 +6,29 @@ part of 'person.dart';
 // AutoDataGenerator
 // **************************************************************************
 
+/// All comments are copied to generated code
+@immutable
 class Person {
+  /// This field gets a default value
   final String name;
+
+  /// This field is not required
   final double weight;
+
+  /// Age of the person
   final int age;
 
-  Person({
-    this.name,
+  const Person({
+    this.name = 'Paul',
     this.weight,
-    this.age,
+    @required this.age,
   });
+
+  /// Custom constructors are copied over
+  Person.genius()
+      : name = 'Albert',
+        weight = null,
+        age = 140;
 
   @override
   bool operator ==(Object other) =>

@@ -5,17 +5,29 @@
 part of auto_data;
 
 class Data {
-
   /**
-   * Create a data annotation
+   * Mark a class for data generation
    */
   const Data();
 
-
-  String toString() => "Data feature";
+  String toString() => "Data class";
 }
 
 /**
  * Marks a class as [Data].
  */
 const Data data = const Data();
+
+class Nullable {
+  /**
+   * Allow a field to be nullable
+   */
+  const Nullable();
+
+  String toString() => "Nullable class";
+}
+
+/**
+ * Marks a field as [Nullable].
+ */
+const Nullable nullable = const Nullable();
