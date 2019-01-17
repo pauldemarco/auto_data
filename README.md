@@ -10,13 +10,12 @@ Specify the data class using the `@data` annotation:
 import 'package:meta/meta.dart';
 import 'package:auto_data/auto_data.dart';
 
-part 'person.g.dart';
+part 'point.g.dart';
 
 @data
-class $Person {
-  String name;
-  double weight;
-  int age;
+class $Point {
+  double x;
+  double y;
 }
 ```
 
@@ -28,46 +27,42 @@ or
 
     pub run build_runner watch
 
-Generated code has named constructor, ==/hashCode, toString, and copyWith:
+Enjoy your generated named constructor, ==/hashCode, toString, and copyWith:
 
 ```dart
-class Person {
-  final String name;
-  final double weight;
-  final int age;
+@immutable
+class Point {
+  final double x;
+  final double y;
 
-  const Person({
-    this.name,
-    this.weight,
-    this.age,
+  const Point({
+    @required this.x,
+    @required this.y,
   });
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is Person &&
+      other is Point &&
           runtimeType == other.runtimeType &&
-          name == other.name &&
-          weight == other.weight &&
-          age == other.age;
+          x == other.x &&
+          y == other.y;
 
   @override
-  int get hashCode => name.hashCode ^ weight.hashCode ^ age.hashCode;
+  int get hashCode => x.hashCode ^ y.hashCode;
 
   @override
   String toString() {
-    return 'Person{name: $name, weight: $weight, age: $age}';
+    return 'Point{x: $x, y: $y}';
   }
 
-  Person copyWith({
-    String name,
-    double weight,
-    int age,
+  Point copyWith({
+    double x,
+    double y,
   }) {
-    return Person(
-      name: name ?? this.name,
-      weight: weight ?? this.weight,
-      age: age ?? this.age,
+    return Point(
+      x: x ?? this.x,
+      y: y ?? this.y,
     );
   }
 }
@@ -101,6 +96,7 @@ dev_dependencies:
 ```dart
 import 'package:meta/meta.dart';
 import 'package:auto_data/auto_data.dart';
+import 'foo.dart';
 
 part 'person.g.dart';
 
@@ -116,6 +112,9 @@ class $Person {
 
   /// Age of the person
   int age;
+
+  /// Depend on another generated class
+  $Foo foo;
 
   /// Custom constructors are copied over
   $Person.genius()

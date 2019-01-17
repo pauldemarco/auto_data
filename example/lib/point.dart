@@ -7,8 +7,4 @@ part 'point.g.dart';
 class $Point {
   double x;
   double y;
-
-  $Point.origin()
-    : x = 0,
-      y = 0;
 }

@@ -16,10 +16,6 @@ class Point {
     @required this.y,
   });
 
-  Point.origin()
-      : x = 0,
-        y = 0;
-
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
