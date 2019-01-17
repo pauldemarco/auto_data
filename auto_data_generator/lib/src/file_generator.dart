@@ -6,43 +6,43 @@ part of auto_data_generator;
 
 class FileGenerator {
   static StringBuffer generate(List<DataClass> classes) {
-    final result = new StringBuffer();
+    final buffer = new StringBuffer();
     classes.forEach((dataClass) {
-      result.write(_generateClassHeader(dataClass));
-      result.writeln(_generateFinalFields(dataClass));
-      result.writeln(_generateNamedConstructor(dataClass));
-      result.writeln(_generateOtherConstructors(dataClass));
-      result.writeln(_generateOperatorEquals(dataClass));
-      result.writeln(_generateHashCode(dataClass));
-      result.writeln(_generateToString(dataClass));
-      result.writeln(_generateCopyWith(dataClass));
-      result.write(_generateClassFooter(dataClass));
+      buffer.write(_generateClassHeader(dataClass));
+      buffer.writeln(_generateFinalFields(dataClass));
+      buffer.writeln(_generateNamedConstructor(dataClass));
+      buffer.writeln(_generateOtherConstructors(dataClass));
+      buffer.writeln(_generateOperatorEquals(dataClass));
+      buffer.writeln(_generateHashCode(dataClass));
+      buffer.writeln(_generateToString(dataClass));
+      buffer.writeln(_generateCopyWith(dataClass));
+      buffer.write(_generateClassFooter(dataClass));
     });
-    return result;
+    return buffer;
   }
 
   static String camelToSnakeCase(String name) {
-    final result = new StringBuffer();
+    final buffer = new StringBuffer();
     for (var c in name.codeUnits) {
       if (c >= 65 && c <= 90) {
         c += 32;
-        if (result.length > 0) {
-          result.write('_');
+        if (buffer.length > 0) {
+          buffer.write('_');
         }
       }
-      result.writeCharCode(c);
+      buffer.writeCharCode(c);
     }
-    return result.toString();
+    return buffer.toString();
   }
 
   static StringBuffer _generateClassHeader(DataClass c) {
-    final result = new StringBuffer();
+    final buffer = new StringBuffer();
     if (c.documentationComment != null) {
-      result.writeln(c.documentationComment);
+      buffer.writeln(c.documentationComment);
     }
-    result.writeln('@immutable');
-    result.writeln('class ${c.name} {');
-    return result;
+    buffer.writeln('@immutable');
+    buffer.writeln('class ${c.name} {');
+    return buffer;
   }
 
   static String _generateClassFooter(DataClass c) {
@@ -50,110 +50,110 @@ class FileGenerator {
   }
 
   static StringBuffer _generateFinalFields(DataClass c) {
-    final result = new StringBuffer();
+    final buffer = new StringBuffer();
     c.props.forEach((p) {
       if (p.documentationComment != null) {
-        result.writeln(p.documentationComment);
+        buffer.writeln(p.documentationComment);
       }
-      result.write('final ${p.type} ${p.name};\n');
+      buffer.write('final ${p.type} ${p.name};\n');
     });
-    return result;
+    return buffer;
   }
 
   static StringBuffer _generateNamedConstructor(DataClass c) {
-    final result = new StringBuffer();
-    result.write('const ');
-    result.write('${c.name}({');
+    final buffer = new StringBuffer();
+    buffer.write('const ');
+    buffer.write('${c.name}({');
 
     c.props.forEach((p) {
       if (!p.isNullable && p.assignmentString == null) {
-        result.write('@required ');
+        buffer.write('@required ');
       }
-      result.write('this.${p.name}');
+      buffer.write('this.${p.name}');
       if(p.assignmentString != null) {
-        result.write(p.assignmentString);
+        buffer.write(p.assignmentString);
       }
-      result.write(', ');
+      buffer.write(', ');
     });
 
-    result.writeln('});');
-    return result;
+    buffer.writeln('});');
+    return buffer;
   }
 
   static StringBuffer _generateOtherConstructors(DataClass c) {
-    final result = new StringBuffer();
+    final buffer = new StringBuffer();
     c.constructors.forEach((c) {
       if (c.documentationComment != null) {
-        result.writeln(c.documentationComment);
+        buffer.writeln(c.documentationComment);
       }
-      result.writeln(c.declaration);
-      result.writeln('');
+      buffer.writeln(c.declaration);
+      buffer.writeln('');
     });
-    return result;
+    return buffer;
   }
 
   static StringBuffer _generateOperatorEquals(DataClass c) {
-    final result = new StringBuffer();
-    result.writeln('@override');
-    result.writeln('bool operator ==(Object other) =>');
-    result.writeln('identical(this, other) ||');
-    result.writeln('other is ${c.name} &&');
-    result.writeln('runtimeType == other.runtimeType &&');
+    final buffer = new StringBuffer();
+    buffer.writeln('@override');
+    buffer.writeln('bool operator ==(Object other) =>');
+    buffer.writeln('identical(this, other) ||');
+    buffer.writeln('other is ${c.name} &&');
+    buffer.writeln('runtimeType == other.runtimeType &&');
 
     final params =
         c.props.map((p) => '${p.name} == other.${p.name}').join(' && ');
-    result.write(params);
+    buffer.write(params);
 
-    result.writeln(';');
-    return result;
+    buffer.writeln(';');
+    return buffer;
   }
 
   static StringBuffer _generateHashCode(DataClass c) {
-    final result = new StringBuffer();
-    result.writeln('@override');
-    result.write('int get hashCode => ');
+    final buffer = new StringBuffer();
+    buffer.writeln('@override');
+    buffer.write('int get hashCode => ');
 
     final params = c.props.map((p) => '${p.name}.hashCode').join(' ^ ');
-    result.write(params);
+    buffer.write(params);
 
-    result.writeln(';');
-    return result;
+    buffer.writeln(';');
+    return buffer;
   }
 
   static StringBuffer _generateToString(DataClass c) {
-    final result = new StringBuffer();
-    result.writeln('@override');
-    result.writeln('String toString() {');
-    result.write('return \'${c.name}{');
+    final buffer = new StringBuffer();
+    buffer.writeln('@override');
+    buffer.writeln('String toString() {');
+    buffer.write('return \'${c.name}{');
 
     final params = c.props.map((p) => '${p.name}: \$${p.name}').join(', ');
-    result.write(params);
+    buffer.write(params);
 
-    result.writeln('}\';');
+    buffer.writeln('}\';');
 
-    result.writeln('}');
-    return result;
+    buffer.writeln('}');
+    return buffer;
   }
 
   static StringBuffer _generateCopyWith(DataClass c) {
-    final result = new StringBuffer();
-    result.writeln('${c.name} copyWith({');
+    final buffer = new StringBuffer();
+    buffer.writeln('${c.name} copyWith({');
 
     c.props.forEach((p) {
-      result.writeln('${p.type} ${p.name},');
+      buffer.writeln('${p.type} ${p.name},');
     });
 
-    result.writeln('}) {');
+    buffer.writeln('}) {');
 
-    result.writeln('return ${c.name}(');
+    buffer.writeln('return ${c.name}(');
 
     c.props.forEach((p) {
-      result.writeln('${p.name}: ${p.name} ?? this.${p.name},');
+      buffer.writeln('${p.name}: ${p.name} ?? this.${p.name},');
     });
 
-    result.writeln(');');
+    buffer.writeln(');');
 
-    result.writeln('}');
-    return result;
+    buffer.writeln('}');
+    return buffer;
   }
 }
