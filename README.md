@@ -30,6 +30,7 @@ or
 Enjoy your generated named constructor, ==/hashCode, toString, and copyWith:
 
 ```dart
+// GENERATED CODE - DO NOT MODIFY BY HAND
 @immutable
 class Point {
   final double x;
