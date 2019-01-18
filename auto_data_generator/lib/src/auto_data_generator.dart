@@ -99,7 +99,7 @@ class DataElementVisitor<T> extends SimpleElementVisitor<T> {
   static DataClassProperty _parseFieldElement(FieldElement field) {
     final name = field.name;
     var type = field.type.displayName;
-    type = type.startsWith('\$') ? type.substring(1) : type;
+    type = type.replaceAll('\$', '');
     final comment = field.documentationComment;
     final isNullable = field.metadata.any((a) => a.toSource() == '@nullable');
     var assignmentString = field.computeNode().toSource();
