@@ -70,7 +70,7 @@ class FileGenerator {
         buffer.write('@required ');
       }
       buffer.write('this.${p.name}');
-      if(p.assignmentString != null) {
+      if (p.assignmentString != null) {
         buffer.write(p.assignmentString);
       }
       buffer.write(', ');
