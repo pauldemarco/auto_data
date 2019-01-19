@@ -148,7 +148,15 @@ class FileGenerator {
     buffer.writeln('return ${c.name}(');
 
     c.props.forEach((p) {
-      buffer.writeln('${p.name}: ${p.name} ?? this.${p.name},');
+      final name = p.name;
+      buffer.write('$name: ');
+      if (p.type.startsWith('List')) {
+        buffer.write(
+            '($name != null) ? ($name == this.$name) ? $name.sublist(0) : $name :');
+      } else {
+        buffer.writeln('$name ?? ');
+      }
+      buffer.writeln('this.$name, ');
     });
 
     buffer.writeln(');');
