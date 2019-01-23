@@ -8,6 +8,7 @@ Specify the data class using the `@data` annotation:
 
 ```dart
 import 'package:meta/meta.dart';
+import 'package:collection/collection.dart';
 import 'package:auto_data/auto_data.dart';
 
 part 'point.g.dart';
@@ -87,6 +88,7 @@ dev_dependencies:
 ## Advanced usage
 
 ```dart
+import 'package:collection/collection.dart';
 import 'package:meta/meta.dart';
 import 'package:auto_data/auto_data.dart';
 import 'foo.dart';
@@ -108,6 +110,9 @@ class $Person {
 
   /// Depend on another generated class
   $Foo foo;
+
+  /// Deep comparison of lists
+  List<$Person> friends;
 
   /// Custom constructors are copied over
   $Person.genius()
