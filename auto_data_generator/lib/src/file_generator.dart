@@ -100,8 +100,13 @@ class FileGenerator {
     buffer.writeln('other is ${c.name} &&');
     buffer.writeln('runtimeType == other.runtimeType &&');
 
-    final params =
-        c.props.map((p) => '${p.name} == other.${p.name}').join(' && ');
+    final params = c.props.map((p) {
+      if (p.type.startsWith('List')) {
+        return 'const ListEquality().equals(${p.name}, other.${p.name})';
+      } else {
+        return '${p.name} == other.${p.name}';
+      }
+    }).join(' && ');
     buffer.write(params);
 
     buffer.writeln(';');
