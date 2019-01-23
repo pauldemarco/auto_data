@@ -62,21 +62,37 @@ class FileGenerator {
 
   static StringBuffer _generateNamedConstructor(DataClass c) {
     final buffer = new StringBuffer();
-    buffer.write('const ');
+    // FIXME: List.unmodifiable causes error: Initializer expressions in constant constructors must be constants.
+    if (!c.props.any((p) => p.type.startsWith('List'))) {
+      buffer.write('const ');
+    }
     buffer.write('${c.name}({');
 
     c.props.forEach((p) {
       if (!p.isNullable && p.assignmentString == null) {
         buffer.write('@required ');
       }
-      buffer.write('this.${p.name}');
+      if (p.type.startsWith('List')) {
+        buffer.write('${p.type} ${p.name}');
+      } else {
+        buffer.write('this.${p.name}');
+      }
       if (p.assignmentString != null) {
         buffer.write(p.assignmentString);
       }
       buffer.write(', ');
     });
 
-    buffer.writeln('});');
+    buffer.write('})');
+    if (c.props.any((p) => p.type.startsWith('List'))) {
+      buffer.write(':');
+      final initializers = c.props.where((p) => p.type.startsWith('List')).map(
+          (p) =>
+              '${p.name} = (${p.name} != null) ? List.unmodifiable(${p.name}) : null');
+      buffer.write(initializers.join(','));
+    }
+
+    buffer.writeln(';');
     return buffer;
   }
 
