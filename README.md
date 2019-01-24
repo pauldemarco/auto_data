@@ -121,7 +121,6 @@ class $Person {
 }
 ```
 
-
 ## Todo's
 
 - [ ] Optional constructor types (named, private, const, etc)
@@ -132,6 +131,16 @@ class $Person {
 - [ ] Deep immutability for List
 - [ ] Serialization toMap/fromMap
 - [ ] Serialization toJson/fromJson
+
+## Limitations
+
+### Cannot set values to null with copyWith
+
+Ex) Clearing a user's avatar image:
+
+```dart
+profile = profile.copyWith(imageUrl: null); // This won't have an effect since copyWith ignores null input parameters.
+```
 
 ## References
 
