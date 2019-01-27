@@ -102,7 +102,7 @@ class FileGenerator {
       if (c.documentationComment != null) {
         buffer.writeln(c.documentationComment);
       }
-      buffer.writeln(c.declaration);
+      buffer.writeln(c.declaration.replaceAll('\$', ''));
       buffer.writeln('');
     });
     return buffer;
