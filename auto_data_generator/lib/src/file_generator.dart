@@ -5,6 +5,8 @@
 part of auto_data_generator;
 
 class FileGenerator {
+  static final _regexTypeSpecifier = RegExp(r'\<(.*?)\>');
+
   static StringBuffer generate(List<DataClass> classes) {
     final buffer = new StringBuffer();
     classes.forEach((dataClass) {
@@ -16,6 +18,8 @@ class FileGenerator {
       buffer.writeln(_generateHashCode(dataClass));
       buffer.writeln(_generateToString(dataClass));
       buffer.writeln(_generateCopyWith(dataClass));
+      buffer.writeln(_generateFromRtdbMap(dataClass));
+      buffer.writeln(_generateToRtdbMap(dataClass));
       buffer.write(_generateClassFooter(dataClass));
     });
     return buffer;
@@ -183,6 +187,83 @@ class FileGenerator {
     buffer.writeln(');');
 
     buffer.writeln('}');
+    return buffer;
+  }
+
+  static StringBuffer _generateFromRtdbMap(DataClass c) {
+    String _getConverter(String name, String type, String argument) {
+      if (type.startsWith('DateTime')) {
+        return 'DateTime.fromMillisecondsSinceEpoch($argument)';
+      } else if (type.startsWith('\$')) {
+        return '$type.fromFirebaseMap($argument)';
+      } else if (type.startsWith('List')) {
+        final buffer = new StringBuffer();
+        buffer.write('(m[\'$name\'] as Map).values');
+        if (_regexTypeSpecifier.hasMatch(type)) {
+          final listType = _regexTypeSpecifier.firstMatch(type).group(1);
+          final converter = _getConverter(name, listType, 'm');
+          buffer.write('.map((m) => $converter)');
+        }
+        buffer.write('.toList()');
+        return buffer.toString();
+      } else {
+        return '$argument';
+      }
+    }
+
+    final buffer = new StringBuffer();
+    buffer.writeln('${c.name}.fromFirebaseMap(Map m):');
+
+    final params = c.props.map((p) {
+      var assignment = _getConverter(p.name, p.type, 'm[\'${p.name}\']');
+      if (p.isNullable && assignment != 'm[\'${p.name}\']') {
+        assignment = 'm[\'${p.name}\'] != null ? $assignment : null';
+      }
+      return '${p.name} = $assignment';
+    }).join(',');
+
+    buffer.write(params);
+
+    buffer.writeln(';');
+    return buffer;
+  }
+
+  static StringBuffer _generateToRtdbMap(DataClass c) {
+    String _getConverter(String name, String type) {
+      if (type.startsWith('DateTime')) {
+        return '$name.millisecondsSinceEpoch';
+      } else if (type.startsWith('\$')) {
+        return '$name.toFirebaseMap()';
+      } else if (type.startsWith('List')) {
+        final buffer = new StringBuffer();
+        buffer.write('Map.fromIterable($name,');
+        if (_regexTypeSpecifier.hasMatch(type)) {
+          final listType = _regexTypeSpecifier.firstMatch(type).group(1);
+          var converter = _getConverter(name, listType);
+          converter = converter.replaceFirst('$name.', 'm.');
+          final key = type.startsWith('\$') ? 'm.id' : 'm.hashCode';
+          buffer.write('key: (m) => $key, value: (m) => $converter)');
+        }
+        return buffer.toString();
+      } else {
+        return '$name';
+      }
+    }
+
+    final buffer = new StringBuffer();
+    buffer.writeln('Map toFirebaseMap() => {');
+
+    final params = c.props.map((p) {
+      var assignment = _getConverter(p.name, p.type);
+      if (p.isNullable && assignment != p.name) {
+        assignment = '${p.name} != null ? $assignment : null';
+      }
+      return '\'${p.name}\': $assignment';
+    }).join(',');
+
+    buffer.write(params);
+
+    buffer.writeln('};');
     return buffer;
   }
 }

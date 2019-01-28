@@ -66,7 +66,7 @@ class AutoDataGenerator extends Generator {
     final result = FileGenerator.generate(classes);
 
     if (result.length > 0) {
-      return result.toString();
+      return result.toString().replaceAll('\$', '');
     }
 
     return null;
@@ -99,7 +99,6 @@ class DataElementVisitor<T> extends SimpleElementVisitor<T> {
   static DataClassProperty _parseFieldElement(FieldElement field) {
     final name = field.name;
     var type = field.type.displayName;
-    type = type.replaceAll('\$', '');
     final comment = field.documentationComment;
     final isNullable = field.metadata.any((a) => a.toSource() == '@nullable');
     var assignmentString = field.computeNode().toSource();
