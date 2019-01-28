@@ -241,7 +241,7 @@ class FileGenerator {
           final listType = _regexTypeSpecifier.firstMatch(type).group(1);
           var converter = _getConverter(name, listType);
           converter = converter.replaceFirst('$name.', 'm.');
-          final key = type.startsWith('\$') ? 'm.id' : 'm.hashCode';
+          final key = listType.startsWith('\$') ? 'm.id' : 'm.hashCode';
           buffer.write('key: (m) => $key, value: (m) => $converter)');
         }
         return buffer.toString();
