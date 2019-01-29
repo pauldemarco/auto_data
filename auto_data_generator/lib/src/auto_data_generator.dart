@@ -36,11 +36,18 @@ class DataClassProperty {
   final String name;
   final String type;
   final bool isNullable;
+  final bool isEnum;
   final String assignmentString;
   final String documentationComment;
 
-  DataClassProperty(this.name, this.type, this.isNullable,
-      [this.assignmentString, this.documentationComment]);
+  DataClassProperty(
+    this.name,
+    this.type,
+    this.isNullable,
+    this.isEnum, [
+    this.assignmentString,
+    this.documentationComment,
+  ]);
 }
 
 class AutoDataGenerator extends Generator {
@@ -50,7 +57,7 @@ class AutoDataGenerator extends Generator {
   Future<String> generate(LibraryReader library, BuildStep buildStep) async {
     final classes = List<DataClass>();
     library.annotatedWith(TypeChecker.fromRuntime(Data)).forEach((e) {
-      final visitor = DataElementVisitor();
+      final visitor = DataElementVisitor(library);
       e.element.visitChildren(visitor);
       final c = DataClass(
         e.element.name.substring(1),
@@ -79,6 +86,10 @@ class DataElementVisitor<T> extends SimpleElementVisitor<T> {
   final List<FieldElement> fieldElements = [];
   final List<ConstructorElement> constElements = [];
 
+  final LibraryReader library;
+
+  DataElementVisitor(this.library);
+
   @override
   T visitFieldElement(FieldElement element) {
     props.add(_parseFieldElement(element));
@@ -96,16 +107,19 @@ class DataElementVisitor<T> extends SimpleElementVisitor<T> {
     }
   }
 
-  static DataClassProperty _parseFieldElement(FieldElement field) {
+  DataClassProperty _parseFieldElement(FieldElement field) {
+    final element = library.findType(field.type.name);
     final name = field.name;
     var type = field.type.displayName;
     final comment = field.documentationComment;
     final isNullable = field.metadata.any((a) => a.toSource() == '@nullable');
+    final isEnum = element?.isEnum ?? false;
     var assignmentString = field.computeNode().toSource();
     assignmentString = assignmentString.substring(name.length);
     if (assignmentString.length <= 0) {
       assignmentString = null;
     }
-    return DataClassProperty(name, type, isNullable, assignmentString, comment);
+    return DataClassProperty(
+        name, type, isNullable, isEnum, assignmentString, comment);
   }
 }

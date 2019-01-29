@@ -191,7 +191,8 @@ class FileGenerator {
   }
 
   static StringBuffer _generateFromRtdbMap(DataClass c) {
-    String _getConverter(String name, String type, String argument) {
+    String _getConverter(
+        String name, String type, String argument, bool isEnum) {
       if (type.startsWith('DateTime')) {
         return 'DateTime.fromMillisecondsSinceEpoch($argument)';
       } else if (type.startsWith('\$')) {
@@ -201,11 +202,13 @@ class FileGenerator {
         buffer.write('(m[\'$name\'] as Map).values');
         if (_regexTypeSpecifier.hasMatch(type)) {
           final listType = _regexTypeSpecifier.firstMatch(type).group(1);
-          final converter = _getConverter(name, listType, 'm');
+          final converter = _getConverter(name, listType, 'm', false);
           buffer.write('.map((m) => $converter)');
         }
         buffer.write('.toList()');
         return buffer.toString();
+      } else if (isEnum) {
+        return '$type.values[$argument]';
       } else {
         return '$argument';
       }
@@ -215,7 +218,8 @@ class FileGenerator {
     buffer.writeln('${c.name}.fromFirebaseMap(Map m):');
 
     final params = c.props.map((p) {
-      var assignment = _getConverter(p.name, p.type, 'm[\'${p.name}\']');
+      var assignment =
+          _getConverter(p.name, p.type, 'm[\'${p.name}\']', p.isEnum);
       if (p.isNullable && assignment != 'm[\'${p.name}\']') {
         assignment = 'm[\'${p.name}\'] != null ? $assignment : null';
       }
@@ -229,7 +233,7 @@ class FileGenerator {
   }
 
   static StringBuffer _generateToRtdbMap(DataClass c) {
-    String _getConverter(String name, String type) {
+    String _getConverter(String name, String type, bool isEnum) {
       if (type.startsWith('DateTime')) {
         return '$name.millisecondsSinceEpoch';
       } else if (type.startsWith('\$')) {
@@ -239,12 +243,14 @@ class FileGenerator {
         buffer.write('Map.fromIterable($name,');
         if (_regexTypeSpecifier.hasMatch(type)) {
           final listType = _regexTypeSpecifier.firstMatch(type).group(1);
-          var converter = _getConverter(name, listType);
+          var converter = _getConverter(name, listType, false);
           converter = converter.replaceFirst('$name.', 'm.');
           final key = listType.startsWith('\$') ? 'm.id' : 'm.hashCode';
           buffer.write('key: (m) => $key, value: (m) => $converter)');
         }
         return buffer.toString();
+      } else if (isEnum) {
+        return '$name.index';
       } else {
         return '$name';
       }
@@ -254,7 +260,7 @@ class FileGenerator {
     buffer.writeln('Map toFirebaseMap() => {');
 
     final params = c.props.map((p) {
-      var assignment = _getConverter(p.name, p.type);
+      var assignment = _getConverter(p.name, p.type, p.isEnum);
       if (p.isNullable && assignment != p.name) {
         assignment = '${p.name} != null ? $assignment : null';
       }
