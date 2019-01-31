@@ -151,7 +151,8 @@ class FileGenerator {
     buffer.writeln('String toString() {');
     buffer.write('return \'${c.name}{');
 
-    final params = c.props.map((p) => '${p.name}: \$${p.name}').join(', ');
+    final params =
+        c.props.map((p) => '${p.name}: \'+${p.name}.toString()+\'').join(', ');
     buffer.write(params);
 
     buffer.writeln('}\';');
