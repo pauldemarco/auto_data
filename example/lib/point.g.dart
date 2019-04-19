@@ -29,7 +29,7 @@ class Point {
 
   @override
   String toString() {
-    return 'Point{x: $x, y: $y}';
+    return 'Point{x: ' + x.toString() + ', y: ' + y.toString() + '}';
   }
 
   Point copyWith({
@@ -41,4 +41,10 @@ class Point {
       y: y ?? this.y,
     );
   }
+
+  Point.fromFirebaseMap(Map m)
+      : x = m['x'],
+        y = m['y'];
+
+  Map toFirebaseMap() => {'x': x, 'y': y};
 }

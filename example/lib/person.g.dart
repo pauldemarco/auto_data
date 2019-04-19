@@ -44,7 +44,13 @@ class Person {
 
   @override
   String toString() {
-    return 'Person{name: $name, weight: $weight, age: $age}';
+    return 'Person{name: ' +
+        name.toString() +
+        ', weight: ' +
+        weight.toString() +
+        ', age: ' +
+        age.toString() +
+        '}';
   }
 
   Person copyWith({
@@ -58,4 +64,11 @@ class Person {
       age: age ?? this.age,
     );
   }
+
+  Person.fromFirebaseMap(Map m)
+      : name = m['name'],
+        weight = m['weight'],
+        age = m['age'];
+
+  Map toFirebaseMap() => {'name': name, 'weight': weight, 'age': age};
 }

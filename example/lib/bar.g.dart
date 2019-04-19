@@ -32,7 +32,13 @@ class Bar {
 
   @override
   String toString() {
-    return 'Bar{fab: $fab, foo: $foo, accuracies: $accuracies}';
+    return 'Bar{fab: ' +
+        fab.toString() +
+        ', foo: ' +
+        foo.toString() +
+        ', accuracies: ' +
+        accuracies.toString() +
+        '}';
   }
 
   Bar copyWith({
@@ -46,4 +52,12 @@ class Bar {
       accuracies: accuracies ?? this.accuracies,
     );
   }
+
+  Bar.fromFirebaseMap(Map m)
+      : fab = m['fab'],
+        foo = Foo.fromFirebaseMap(m['foo']),
+        accuracies = m['accuracies'];
+
+  Map toFirebaseMap() =>
+      {'fab': fab, 'foo': foo.toFirebaseMap(), 'accuracies': accuracies};
 }
