@@ -50,8 +50,62 @@ class DataClassProperty {
   ]);
 }
 
-class AutoDataGenerator extends Generator {
+class AutoDataGenerator extends GeneratorForAnnotation<Data> {
   const AutoDataGenerator();
+
+@override
+  FutureOr<String> generateForAnnotatedElement(
+      Element element, ConstantReader annotation, BuildStep buildStep) {
+    if (element is! ClassElement) {
+      final name = element.name;
+      throw InvalidGenerationSourceError('Generator cannot target `$name`.',
+          todo: 'Remove the Data annotation from `$name`.', element: element);
+    }
+
+    final classElement = element as ClassElement;
+    if (!classElement.name.startsWith('\$') || classElement.name.length <= 1) {
+      throw InvalidGenerationSourceError(
+          'AutoData Class invalid name: `${classElement.name}`.',
+          todo:
+              'AutoData class must start with a \$ character: `${classElement.name}`.',
+          element: element);
+    }
+
+    final className = classElement.name.substring(1);
+
+    final visitor = DataElementVisitor(classElement);
+    classElement.visitChildren(visitor);
+    final c = DataClass(
+      className,
+      visitor.props,
+      visitor.constructors,
+      visitor.fieldElements,
+      visitor.constElements,
+      documentationComment: element.documentationComment,
+    );
+
+    final result = FileGenerator.generate([c]);
+
+    print(result);
+    if (result.length > 0) {
+      return result.toString().replaceAll('\$', '');
+    }
+
+    
+    final classBuilder = new Class((c) {
+      c
+        ..name = className
+        ..constructors.addAll(_copyConstructors());
+    });
+    final emitter = new DartEmitter();
+    return new DartFormatter().format('${classBuilder.accept(emitter)}');
+  }
+
+  List<Constructor> _copyConstructors(ClassElement classElement) {
+    return classElement.constructors.map((e) {
+      return Constructor((c) {});
+    }).toList();
+  }
 
   @override
   Future<String> generate(LibraryReader library, BuildStep buildStep) async {
