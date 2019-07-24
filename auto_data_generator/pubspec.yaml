@@ -10,8 +10,7 @@ environment:
   sdk: ">=2.1.0 <3.0.0"
 
 dependencies:
-  auto_data:
-    path: ../auto_data
+  auto_data: ^0.0.1
   build: ^1.0.0
   source_gen: ^0.9.4+1
 
