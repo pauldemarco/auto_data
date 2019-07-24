@@ -1,17 +1,16 @@
 name: example
-description: Auto-generate dart data classes
+description: >
+  Example project using auto_data that generates simple data classes.
 version: 0.0.1
-author: Paul DeMarco
+author: Paul DeMarco <paulmdemarco@gmail.com>
 homepage: https://www.github.com/pauldemarco/auto_data
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
 
 dependencies:
-  auto_data:
-    path: ../auto_data
+  auto_data: ^0.0.1
 
 dev_dependencies:
   build_runner: ^1.0.0
-  auto_data_generator:
-    path: ../auto_data_generator
+  auto_data_generator: ^0.0.1
