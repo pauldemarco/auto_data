@@ -1,32 +1,20 @@
 # auto_data
 
-Generate simple data classes for dart.
+Generate simple data classes for Dart.
+
+A data class is an immutable class meant to hold data, similar to Kotlin's [data class](https://kotlinlang.org/docs/reference/data-classes.html).
 
 ## Example
 
 Specify the data class using the `@data` annotation:
 
 ```dart
-import 'package:meta/meta.dart';
-import 'package:collection/collection.dart';
-import 'package:auto_data/auto_data.dart';
-
-part 'point.g.dart';
-
 @data
 class $Point {
   double x;
   double y;
 }
 ```
-
-Generate using build_runner:
-
-    pub run build_runner build
-
-or
-
-    pub run build_runner watch
 
 Enjoy your generated named constructor, ==/hashCode, toString, and copyWith:
 
@@ -76,13 +64,46 @@ Add the following to your pubspec.yaml:
 
 ```yaml
 dependencies:
-  auto_data:
-    path: ../auto_data
+  auto_data: ^0.0.1
 
 dev_dependencies:
   build_runner: ^1.0.0
-  auto_data_generator:
-    path: ../auto_data_generator
+  auto_data_generator: ^0.0.1
+```
+
+Create your `point.dart` file with correct imports:
+
+```dart
+import 'package:meta/meta.dart';
+import 'package:collection/collection.dart';
+import 'package:auto_data/auto_data.dart';
+
+part 'point.g.dart';
+
+@data
+class $Point {
+  double x;
+  double y;
+}
+```
+
+Lastly, generate using build_runner:
+
+    pub run build_runner build
+
+or
+
+    pub run build_runner watch
+
+Enjoy your generated `point.g.dart` file:
+
+```dart
+final p1 = Point(x: 0, y: 1);
+final p2 = Point(x: 0, y: 2);
+assert(p1 != p2);
+final p3 = p1.copyWith(y: 2);
+assert(p2 == p3);
+print(p3.toString());
 ```
 
 ## Advanced usage
