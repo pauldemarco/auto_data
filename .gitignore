@@ -1,7 +1,7 @@
 .buildlog
 .dart_tool/
 .DS_Store
-.idea
+.idea/
 .pub/
 .settings/
 *.iml
