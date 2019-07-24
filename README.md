@@ -64,11 +64,11 @@ Add the following to your pubspec.yaml:
 
 ```yaml
 dependencies:
-  auto_data: ^0.0.1
+  auto_data: ^0.0.2
 
 dev_dependencies:
   build_runner: ^1.0.0
-  auto_data_generator: ^0.0.1
+  auto_data_generator: ^0.0.2
 ```
 
 Create your `point.dart` file with correct imports:
