@@ -95,9 +95,11 @@ or
 
     pub run build_runner watch
 
-Enjoy your generated `point.g.dart` file:
+Use your generated `Point` class:
 
 ```dart
+import 'point.dart';
+
 final p1 = Point(x: 0, y: 1);
 final p2 = Point(x: 0, y: 2);
 assert(p1 != p2);
