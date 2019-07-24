@@ -98,23 +98,28 @@ class DataElementVisitor<T> extends SimpleElementVisitor<T> {
 
   @override
   T visitConstructorElement(ConstructorElement element) {
-    final declaration = element.computeNode();
+    final parsedLibrary =
+        element.session.getParsedLibraryByElement(element.library);
+    final declaration = parsedLibrary.getElementDeclaration(element);
     if (declaration != null) {
-      var s = element.computeNode().toSource();
+      var s = declaration.node.toSource();
       s = s.startsWith('\$') ? s.substring(1) : s;
       constructors.add(DataClassConstructor(s, element.documentationComment));
       constElements.add(element);
     }
   }
 
-  DataClassProperty _parseFieldElement(FieldElement field) {
-    final element = library.findType(field.type.name);
-    final name = field.name;
-    var type = field.type.displayName;
-    final comment = field.documentationComment;
-    final isNullable = field.metadata.any((a) => a.toSource() == '@nullable');
-    final isEnum = element?.isEnum ?? false;
-    var assignmentString = field.computeNode().toSource();
+  DataClassProperty _parseFieldElement(FieldElement element) {
+    final parsedLibrary =
+        element.session.getParsedLibraryByElement(element.library);
+    final declaration = parsedLibrary.getElementDeclaration(element);
+    final ee = library.findType(element.type.name);
+    final name = element.name;
+    final type = element.type.displayName;
+    final comment = element.documentationComment;
+    final isNullable = element.metadata.any((a) => a.toSource() == '@nullable');
+    final isEnum = ee?.isEnum ?? false;
+    var assignmentString = declaration.node.toSource();
     assignmentString = assignmentString.substring(name.length);
     if (assignmentString.length <= 0) {
       assignmentString = null;
