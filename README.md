@@ -16,7 +16,7 @@ class $Point {
 }
 ```
 
-Enjoy your generated named constructor, ==/hashCode, toString, and copyWith:
+Enjoy your generated named constructor, ==/hashCode, toString, copyWith, and serialization:
 
 ```dart
 // GENERATED CODE - DO NOT MODIFY BY HAND
@@ -43,7 +43,7 @@ class Point {
 
   @override
   String toString() {
-    return 'Point{x: $x, y: $y}';
+    return 'Point{x: ' + x.toString() + ', y: ' + y.toString() + '}';
   }
 
   Point copyWith({
@@ -55,6 +55,16 @@ class Point {
       y: y ?? this.y,
     );
   }
+
+  Point.fromMap(Map<String, dynamic> m)
+      : x = m['x'],
+        y = m['y'];
+
+  Map<String, dynamic> toMap() => {'x': x, 'y': y};
+
+  factory Point.fromJson(String json) => Point.fromMap(jsonDecode(json));
+
+  String toJson() => jsonEncode(toMap());
 }
 ```
 
@@ -64,11 +74,11 @@ Add the following to your pubspec.yaml:
 
 ```yaml
 dependencies:
-  auto_data: ^0.0.2
+  auto_data: ^0.0.3
 
 dev_dependencies:
   build_runner: ^1.0.0
-  auto_data_generator: ^0.0.2
+  auto_data_generator: ^0.0.3
 ```
 
 Create your `point.dart` file with correct imports:
@@ -77,6 +87,7 @@ Create your `point.dart` file with correct imports:
 import 'package:meta/meta.dart';
 import 'package:collection/collection.dart';
 import 'package:auto_data/auto_data.dart';
+import 'dart:convert';
 
 part 'point.g.dart';
 
@@ -114,6 +125,7 @@ print(p3.toString());
 import 'package:collection/collection.dart';
 import 'package:meta/meta.dart';
 import 'package:auto_data/auto_data.dart';
+import 'dart:convert';
 import 'foo.dart';
 
 part 'person.g.dart';
@@ -151,9 +163,9 @@ class $Person {
 - [x] Default values by assigning during declaration: `String name = 'Paul';`
 - [x] Add @nullable annotation for fields that are not required
 - [ ] Deep immutability for Map
-- [ ] Deep immutability for List
-- [ ] Serialization toMap/fromMap
-- [ ] Serialization toJson/fromJson
+- [x] Deep immutability for List
+- [x] Serialization toMap/fromMap
+- [x] Serialization toJson/fromJson
 
 ## Limitations
 
@@ -169,3 +181,4 @@ profile = profile.copyWith(imageUrl: null); // This won't have an effect since c
 
 1. [Issue: Statically tracked shared immutable objects](https://github.com/dart-lang/language/issues/125)
 1. [Proposal: Shared immutable objects](https://github.com/dart-lang/language/blob/master/working/0125-static-immutability/feature-specification.md)
+1. [Patterns and related features](https://github.com/dart-lang/language/issues/546)

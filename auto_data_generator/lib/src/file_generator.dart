@@ -18,8 +18,10 @@ class FileGenerator {
       buffer.writeln(_generateHashCode(dataClass));
       buffer.writeln(_generateToString(dataClass));
       buffer.writeln(_generateCopyWith(dataClass));
-      buffer.writeln(_generateFromRtdbMap(dataClass));
-      buffer.writeln(_generateToRtdbMap(dataClass));
+      buffer.writeln(_generateFromMap(dataClass));
+      buffer.writeln(_generateToMap(dataClass));
+      buffer.writeln(_generateFromJson(dataClass));
+      buffer.writeln(_generateToJson(dataClass));
       buffer.write(_generateClassFooter(dataClass));
     });
     return buffer;
@@ -191,13 +193,13 @@ class FileGenerator {
     return buffer;
   }
 
-  static StringBuffer _generateFromRtdbMap(DataClass c) {
+  static StringBuffer _generateFromMap(DataClass c) {
     String _getConverter(
         String name, String type, String argument, bool isEnum) {
       if (type.startsWith('DateTime')) {
         return 'DateTime.fromMillisecondsSinceEpoch($argument)';
       } else if (type.startsWith('\$')) {
-        return '$type.fromFirebaseMap($argument)';
+        return '$type.fromMap($argument)';
       } else if (type.startsWith('List')) {
         final buffer = new StringBuffer();
         buffer.write('(m[\'$name\'] as Map).values');
@@ -216,7 +218,7 @@ class FileGenerator {
     }
 
     final buffer = new StringBuffer();
-    buffer.writeln('${c.name}.fromFirebaseMap(Map m):');
+    buffer.writeln('${c.name}.fromMap(Map<String, dynamic> m):');
 
     final params = c.props.map((p) {
       var assignment =
@@ -233,12 +235,12 @@ class FileGenerator {
     return buffer;
   }
 
-  static StringBuffer _generateToRtdbMap(DataClass c) {
+  static StringBuffer _generateToMap(DataClass c) {
     String _getConverter(String name, String type, bool isEnum) {
       if (type.startsWith('DateTime')) {
         return '$name.millisecondsSinceEpoch';
       } else if (type.startsWith('\$')) {
-        return '$name.toFirebaseMap()';
+        return '$name.toMap()';
       } else if (type.startsWith('List')) {
         final buffer = new StringBuffer();
         buffer.write('Map.fromIterable($name,');
@@ -248,8 +250,10 @@ class FileGenerator {
           converter = converter.replaceFirst('$name.', 'm.');
           final key = listType.startsWith('\$') ? 'm.id' : 'm.hashCode';
           buffer.write('key: (m) => $key, value: (m) => $converter)');
+          return buffer.toString();
+        } else {
+          throw Exception('No type specified for List. Are you sure you imported necessary data models?');
         }
-        return buffer.toString();
       } else if (isEnum) {
         return '$name.index';
       } else {
@@ -258,7 +262,7 @@ class FileGenerator {
     }
 
     final buffer = new StringBuffer();
-    buffer.writeln('Map toFirebaseMap() => {');
+    buffer.writeln('Map<String, dynamic> toMap() => {');
 
     final params = c.props.map((p) {
       var assignment = _getConverter(p.name, p.type, p.isEnum);
@@ -271,6 +275,18 @@ class FileGenerator {
     buffer.write(params);
 
     buffer.writeln('};');
+    return buffer;
+  }
+
+  static StringBuffer _generateFromJson(DataClass c) {
+    final buffer = new StringBuffer();
+    buffer.writeln('factory ${c.name}.fromJson(String json) => ${c.name}.fromMap(jsonDecode(json));');
+    return buffer;
+  }
+
+  static StringBuffer _generateToJson(DataClass c) {
+    final buffer = new StringBuffer();
+    buffer.writeln('String toJson() => jsonEncode(toMap());');
     return buffer;
   }
 }

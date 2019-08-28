@@ -2,7 +2,7 @@ name: auto_data_generator
 description: >
   Automatically generate simple data class files for Dart.
   This is the dev dependency.
-version: 0.0.2
+version: 0.0.3
 author: Paul DeMarco <paulmdemarco@gmail.com>
 homepage: https://www.github.com/pauldemarco/auto_data
 
@@ -10,7 +10,7 @@ environment:
   sdk: ">=2.1.0 <3.0.0"
 
 dependencies:
-  auto_data: ^0.0.2
+  auto_data: ^0.0.3
   build: ^1.0.0
   source_gen: ^0.9.4+1
 

@@ -1,7 +1,7 @@
 name: example
 description: >
   Example project using auto_data that generates simple data classes.
-version: 0.0.2
+version: 0.0.3
 author: Paul DeMarco <paulmdemarco@gmail.com>
 homepage: https://www.github.com/pauldemarco/auto_data
 
@@ -9,8 +9,8 @@ environment:
   sdk: ">=2.1.0 <3.0.0"
 
 dependencies:
-  auto_data: ^0.0.2
+  auto_data: ^0.0.3
 
 dev_dependencies:
   build_runner: ^1.0.0
-  auto_data_generator: ^0.0.2
+  auto_data_generator: ^0.0.3

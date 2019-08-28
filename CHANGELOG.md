@@ -1,3 +1,8 @@
+## 0.0.3
+
+* Added support for toJson and fromJson
+* Renamed toFirebaseMap/fromFirebaseMap -> toMap/fromMap
+
 ## 0.0.2
 
 * Various package structure fixes
